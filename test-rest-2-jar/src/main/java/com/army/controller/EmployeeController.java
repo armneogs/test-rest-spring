@@ -141,7 +141,7 @@ public class EmployeeController {
 	//	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(value = "/update",method = RequestMethod.PATCH)
 	public String updateEmployee(@RequestBody Employee employee) {
-		Optional<Employee> entityEmployeeOptional = employeeRepo.findById(employee.getemployeeId());
+		Optional<Employee> entityEmployeeOptional = employeeRepo.findById(employee.getEmployeeId());
 		if(entityEmployeeOptional.isPresent()) {
 			try {
 				Employee entityEmployee = entityEmployeeOptional.get();
