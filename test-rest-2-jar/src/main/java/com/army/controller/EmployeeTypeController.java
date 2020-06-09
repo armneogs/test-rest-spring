@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.army.model.EmployeeType;
 import com.army.repo.EmployeeTypeRepo;
+import com.army.repo.StatusRepo;
 import com.army.service.PropertyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,8 +30,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class EmployeeTypeController {
 	@Autowired
 	private EmployeeTypeRepo employeeTypeRepo;
-	@Autowired
-	private PropertyService propertyService;
 	@Autowired
 	private ObjectMapper jacksonObjectMapper;
 
@@ -56,6 +56,7 @@ public class EmployeeTypeController {
 		List<EmployeeType> employeeTypeList = employeeTypeRepo.findByTypeName(name);
 		if (employeeTypeList != null && !employeeTypeList.isEmpty()) {
 			try {
+
 				jsonStringB.append(jacksonObjectMapper.writeValueAsString(employeeTypeList));
 			} catch (JsonProcessingException e) {
 				jsonStringB.append(e);
@@ -76,7 +77,10 @@ public class EmployeeTypeController {
 		StringBuilder jsonStringB = new StringBuilder();
 		if (employeeTypeO.isPresent()) {
 			EmployeeType employeeType = employeeTypeO.get();
+			System.out.println(employeeType);
 			try {
+				Hibernate.initialize(employeeType.getStatus());
+				
 				jsonStringB.append(jacksonObjectMapper.writeValueAsString(employeeType));
 			} catch (JsonProcessingException e) {
 				jsonStringB.append(e);
