@@ -18,6 +18,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "message", schema = "public")
 public class Message implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3003927840573285704L;
 	private long messageId;
 	private Employee employee;
 	private String messageBody;

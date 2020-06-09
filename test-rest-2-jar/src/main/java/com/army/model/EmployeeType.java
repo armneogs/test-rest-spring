@@ -21,6 +21,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "employee_type", schema = "public")
 public class EmployeeType implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3892664727289337205L;
 	private long typeId;
 	private Status status;
 	private String typeName;
@@ -54,7 +58,6 @@ public class EmployeeType implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "status_id", nullable = false)
-	@JsonIgnore
 	public Status getStatus() {
 		return this.status;
 	}

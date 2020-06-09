@@ -22,6 +22,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "employee", schema = "public")
 public class Employee implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2475118852842255703L;
 	private long employeeId;
 	private EmployeeType employeeType;
 	private String name;

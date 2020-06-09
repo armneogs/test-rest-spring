@@ -13,6 +13,10 @@ import javax.persistence.Table;
 @Table(name = "formula", schema = "public")
 public class Formula implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7972293139702749100L;
 	private int formulaPk;
 	private String formulaLatex;
 
