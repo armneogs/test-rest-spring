@@ -96,12 +96,15 @@ public class EmployeeTypeController {
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
 	public String saveType(@RequestBody EmployeeType type) {
 		StringBuilder jsonStringB = new StringBuilder();
+		
 		try {
 			employeeTypeRepo.save(type);
 			jsonStringB.append(jacksonObjectMapper.writeValueAsString(type));
 		} catch (Exception e) {
+			System.out.println(e);
 			return jsonStringB.append("not suc" + e.getMessage()).toString();
 		}
+		System.out.println(jsonStringB.toString());
 		return jsonStringB.toString();
 	}
 
@@ -142,8 +145,7 @@ public class EmployeeTypeController {
 			if (employeeTypeO.isPresent()) {
 				EmployeeType employeeType = employeeTypeO.get();
 				employeeTypeList.add(employeeType);
-//				employeeTypeRepo.delete(employeeType);
-				
+
 			} else {
 				cantFindIdStb.append(id.toString()+",");
 			}

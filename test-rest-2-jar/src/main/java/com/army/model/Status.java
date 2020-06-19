@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -19,9 +20,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "status", schema = "public")
 public class Status implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8606765778975715462L;
 	private String statusId;
 	private String statusName;
@@ -41,7 +39,7 @@ public class Status implements java.io.Serializable {
 	}
 
 	@Id
-
+	@GeneratedValue
 	@Column(name = "status_id", unique = true, nullable = false, length = 3)
 	public String getStatusId() {
 		return this.statusId;

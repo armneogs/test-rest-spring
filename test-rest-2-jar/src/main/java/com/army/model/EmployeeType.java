@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -21,7 +22,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "employee_type", schema = "public")
 public class EmployeeType implements java.io.Serializable {
 
-	private long typeId;
+	private static final long serialVersionUID = 7099451823255540205L;
+	private Long typeId;
 	private Status status;
 	private String typeName;
 	private Set<Employee> employees = new HashSet<Employee>(0);
@@ -29,12 +31,12 @@ public class EmployeeType implements java.io.Serializable {
 	public EmployeeType() {
 	}
 
-	public EmployeeType(long typeId, Status status) {
+	public EmployeeType(Long typeId, Status status) {
 		this.typeId = typeId;
 		this.status = status;
 	}
 
-	public EmployeeType(long typeId, Status status, String typeName, Set<Employee> employees) {
+	public EmployeeType(Long typeId, Status status, String typeName, Set<Employee> employees) {
 		this.typeId = typeId;
 		this.status = status;
 		this.typeName = typeName;
@@ -42,13 +44,13 @@ public class EmployeeType implements java.io.Serializable {
 	}
 
 	@Id
-
+	@GeneratedValue
 	@Column(name = "type_id", unique = true, nullable = false)
-	public long getTypeId() {
+	public Long getTypeId() {
 		return this.typeId;
 	}
 
-	public void setTypeId(long typeId) {
+	public void setTypeId(Long typeId) {
 		this.typeId = typeId;
 	}
 

@@ -30,5 +30,21 @@ public  class PropertyService {
 	    }
 	    return nullPropArray;
 	}
+	
+	public String[] getIgnorePropertyArray (Object source) {
+	    return getIgnorePropertyArray(source, getNullPropertyNames(source));
+	}
+	
+	public String[] getIgnorePropertyArray (Object source, Set<String> ignoreProperty) {
+		if(ignoreProperty == null) {
+			return null;
+		}
+		String[] nullPropArray = new String[ignoreProperty.size()];
+		int i=0;
+	    for(String nullProp  : ignoreProperty) {
+	    	nullPropArray[i++] = nullProp;
+	    }
+	    return nullPropArray;
+	}
 
  }

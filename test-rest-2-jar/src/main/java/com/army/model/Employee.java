@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,11 +23,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "employee", schema = "public")
 public class Employee implements java.io.Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -2475118852842255703L;
-	private long employeeId;
+	private static final long serialVersionUID = 3583962085364302293L;
+	private Long employeeId;
 	private EmployeeType employeeType;
 	private String name;
 	private BigDecimal salary;
@@ -35,12 +33,12 @@ public class Employee implements java.io.Serializable {
 	public Employee() {
 	}
 
-	public Employee(long employeeId, EmployeeType employeeType) {
+	public Employee(Long employeeId, EmployeeType employeeType) {
 		this.employeeId = employeeId;
 		this.employeeType = employeeType;
 	}
 
-	public Employee(long employeeId, EmployeeType employeeType, String name, BigDecimal salary, Set<Message> messages) {
+	public Employee(Long employeeId, EmployeeType employeeType, String name, BigDecimal salary, Set<Message> messages) {
 		this.employeeId = employeeId;
 		this.employeeType = employeeType;
 		this.name = name;
@@ -49,19 +47,18 @@ public class Employee implements java.io.Serializable {
 	}
 
 	@Id
-
+	@GeneratedValue
 	@Column(name = "employee_id", unique = true, nullable = false)
-	public long getEmployeeId() {
+	public Long getEmployeeId() {
 		return this.employeeId;
 	}
 
-	public void setEmployeeId(long employeeId) {
+	public void setEmployeeId(Long employeeId) {
 		this.employeeId = employeeId;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "type_id", nullable = false)
-	@JsonIgnore
 	public EmployeeType getEmployeeType() {
 		return this.employeeType;
 	}
@@ -90,6 +87,7 @@ public class Employee implements java.io.Serializable {
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
 	@JsonIgnore
+	
 	public Set<Message> getMessages() {
 		return this.messages;
 	}

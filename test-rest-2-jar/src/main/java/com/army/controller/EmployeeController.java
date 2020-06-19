@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 //import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -122,56 +124,61 @@ public class EmployeeController {
 	//	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(value = "/save",method = RequestMethod.POST)
 	public String saveEmployee(@RequestBody Employee employee) {
+		StringBuilder jsonStringB = new StringBuilder();
 		try {
 			
 			Optional<EmployeeType> empTypeO = employeeTypeRepo.findById(employee.getEmployeeType().getTypeId());
 			if(empTypeO.isPresent()) {
 				employee.setEmployeeType(empTypeO.get());
 				employeeRepo.save(employee);
+				jsonStringB.append(jacksonObjectMapper.writeValueAsString(employee));
 			}else {
-				return "not suc : can't employee type";
+				return "not suc : can't find employee type";
 			}
 			
 		}catch (Exception e) {
-			return "not suc : " + e.getMessage();
+			return e.toString();
 		}
-		return "suc";
+		return jsonStringB.toString();
 	}
 	
 	//	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(value = "/update",method = RequestMethod.PATCH)
-	public String updateEmployee(@RequestBody Employee employee) {
+	public ResponseEntity<?>  updateEmployee(@RequestBody Employee employee) {
 		Optional<Employee> entityEmployeeOptional = employeeRepo.findById(employee.getEmployeeId());
 		if(entityEmployeeOptional.isPresent()) {
 			try {
 				Employee entityEmployee = entityEmployeeOptional.get();
 				Set<String> ignoreSet =  propertyService.getNullPropertyNames(employee);
+				ignoreSet.add("messages");
+				String[] ignoreArray = propertyService.getIgnorePropertyArray(entityEmployee, ignoreSet) ;
 
-				BeanUtils.copyProperties(employee, entityEmployee,(String[]) ignoreSet.toArray());
+				BeanUtils.copyProperties(employee, entityEmployee, ignoreArray);
 				employeeRepo.save(entityEmployee);
 			}catch (Exception e) {
-				return "not suc : "+ e.getMessage();
+				System.out.println(e);
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString());
 			}
-			return "suc";
+			return ResponseEntity.ok().build();
 		}
-		return "not suc : can't find entity";
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not suc : can't find entity");
 	}
 
 	
 	//	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(value = "/delete/{id}",method = RequestMethod.DELETE)
-	public String deleteEmployee(@PathVariable("id") Long id) {
+	public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id) {
 		Optional<Employee> entityEmployeeOptional = employeeRepo.findById(id);
 		if(entityEmployeeOptional.isPresent()) {
 			try {
 				Employee entityEmployee = entityEmployeeOptional.get();
 				employeeRepo.delete(entityEmployee);
 			}catch (Exception e) {
-				return "not suc : "+ e.getMessage();
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString());
 			}
-			return "suc";
+			return ResponseEntity.ok().build();
 		}
-		return "not suc : can't find entity";
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not suc : can't find entity");
 
 	}
 	
