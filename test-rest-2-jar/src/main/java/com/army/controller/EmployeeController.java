@@ -1,6 +1,7 @@
 package com.army.controller;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.army.model.Employee;
@@ -166,19 +168,60 @@ public class EmployeeController {
 
 	
 	//	@CrossOrigin(origins = "http://localhost:4200")
-	@RequestMapping(value = "/delete/{id}",method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteEmployee(@PathVariable("id") Long id) {
-		Optional<Employee> entityEmployeeOptional = employeeRepo.findById(id);
-		if(entityEmployeeOptional.isPresent()) {
-			try {
-				Employee entityEmployee = entityEmployeeOptional.get();
-				employeeRepo.delete(entityEmployee);
-			}catch (Exception e) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString());
+	@RequestMapping(value = "/delete",method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteEmployee(@RequestParam Long[] ids) {
+//		Optional<Employee> entityEmployeeOptional = employeeRepo.findById(id);
+//		if(entityEmployeeOptional.isPresent()) {
+//			try {
+//				Employee entityEmployee = entityEmployeeOptional.get();
+//				employeeRepo.delete(entityEmployee);
+//			}catch (Exception e) {
+//				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString());
+//			}
+//			return ResponseEntity.ok().build();
+//		}
+		StringBuilder jsonStringB = new StringBuilder();
+		StringBuilder cantFindIdStb = new StringBuilder();
+		StringBuilder cantDeleteList = new StringBuilder();
+		
+		List<Employee> employeeList = new ArrayList<Employee>();
+		for(Long id : ids) {
+			Optional<Employee> employeeO = employeeRepo.findById(id);
+			if (employeeO.isPresent()) {
+				Employee employee = employeeO.get();
+				employeeList.add(employee);
+
+			} else {
+				cantFindIdStb.append(id.toString()+",");
 			}
-			return ResponseEntity.ok().build();
+
 		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("not suc : can't find entity");
+		
+		if(cantFindIdStb.length() != 0) {
+			cantFindIdStb.setLength(cantFindIdStb.length()-1);
+			jsonStringB.append("Can't find employee for delete with this parameter : ");
+			jsonStringB.append(cantFindIdStb.toString());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jsonStringB.toString());
+		
+		}
+		
+		for(Employee emp : employeeList) {
+			try {
+				employeeRepo.delete(emp);
+			} catch (Exception e) {
+				cantDeleteList.append(emp.getEmployeeId() + ", ");
+			}
+		}
+		
+		if(cantDeleteList.length() != 0) {
+			cantDeleteList.setLength(cantDeleteList.length()-2);
+			cantDeleteList.append("Can't delete employee by id with :"+cantDeleteList.toString());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jsonStringB.toString());
+		}
+		
+		jsonStringB.append("delete suc");
+
+		return ResponseEntity.ok().build();
 
 	}
 	
